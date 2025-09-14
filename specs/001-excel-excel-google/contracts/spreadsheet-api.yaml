@@ -1,0 +1,480 @@
+openapi: 3.0.0
+info:
+  title: Spreadsheet API
+  version: 0.1.0
+  description: API契約定義 - スプレッドシート操作
+
+paths:
+  /api/spreadsheets:
+    get:
+      summary: スプレッドシート一覧取得
+      operationId: listSpreadsheets
+      responses:
+        '200':
+          description: スプレッドシート一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SpreadsheetMetadata'
+
+    post:
+      summary: 新規スプレッドシート作成
+      operationId: createSpreadsheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                gridSize:
+                  $ref: '#/components/schemas/GridSize'
+      responses:
+        '201':
+          description: 作成されたスプレッドシート
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spreadsheet'
+
+  /api/spreadsheets/{id}:
+    get:
+      summary: スプレッドシート取得
+      operationId: getSpreadsheet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: スプレッドシート
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spreadsheet'
+        '404':
+          description: Not Found
+
+    put:
+      summary: スプレッドシート更新
+      operationId: updateSpreadsheet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Spreadsheet'
+      responses:
+        '200':
+          description: 更新されたスプレッドシート
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spreadsheet'
+
+    delete:
+      summary: スプレッドシート削除
+      operationId: deleteSpreadsheet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: 削除成功
+
+  /api/spreadsheets/{id}/cells:
+    patch:
+      summary: セル更新（バッチ）
+      operationId: updateCells
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cells:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CellUpdate'
+      responses:
+        '200':
+          description: 更新結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cell'
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CellError'
+
+  /api/spreadsheets/{id}/calculate:
+    post:
+      summary: 数式再計算
+      operationId: recalculate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                range:
+                  $ref: '#/components/schemas/CellRange'
+      responses:
+        '200':
+          description: 計算結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cells:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cell'
+                  executionTime:
+                    type: number
+                    description: 計算時間（ミリ秒）
+
+  /api/spreadsheets/{id}/export/csv:
+    get:
+      summary: CSV形式でエクスポート
+      operationId: exportCsv
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: encoding
+          in: query
+          schema:
+            type: string
+            enum: [utf-8, shift-jis]
+            default: utf-8
+        - name: delimiter
+          in: query
+          schema:
+            type: string
+            enum: [comma, semicolon, tab]
+            default: comma
+      responses:
+        '200':
+          description: CSVファイル
+          content:
+            text/csv:
+              schema:
+                type: string
+
+  /api/spreadsheets/{id}/import/csv:
+    post:
+      summary: CSVファイルインポート
+      operationId: importCsv
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                options:
+                  type: object
+                  properties:
+                    encoding:
+                      type: string
+                      enum: [utf-8, shift-jis]
+                    delimiter:
+                      type: string
+                      enum: [comma, semicolon, tab]
+                    hasHeader:
+                      type: boolean
+      responses:
+        '200':
+          description: インポート結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rowsImported:
+                    type: integer
+                  columnsImported:
+                    type: integer
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        row:
+                          type: integer
+                        column:
+                          type: integer
+                        message:
+                          type: string
+
+components:
+  schemas:
+    Spreadsheet:
+      type: object
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+        - gridSize
+        - version
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        gridSize:
+          $ref: '#/components/schemas/GridSize'
+        cells:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Cell'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Row'
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Column'
+        version:
+          type: string
+
+    SpreadsheetMetadata:
+      type: object
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        size:
+          type: integer
+        compressed:
+          type: boolean
+
+    GridSize:
+      type: object
+      required:
+        - rowCount
+        - columnCount
+      properties:
+        rowCount:
+          type: integer
+          minimum: 1
+          maximum: 1000
+        columnCount:
+          type: integer
+          minimum: 1
+          maximum: 1000
+
+    Cell:
+      type: object
+      required:
+        - address
+        - type
+      properties:
+        address:
+          $ref: '#/components/schemas/CellAddress'
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: 'null'
+        formula:
+          type: string
+          pattern: '^='
+        type:
+          type: string
+          enum: [text, number, boolean, date, formula, empty]
+        error:
+          $ref: '#/components/schemas/FormulaError'
+
+    CellAddress:
+      type: object
+      required:
+        - row
+        - column
+        - address
+      properties:
+        row:
+          type: integer
+          minimum: 0
+        column:
+          type: integer
+          minimum: 0
+        address:
+          type: string
+          pattern: '^[A-Z]+[1-9][0-9]*$'
+
+    CellUpdate:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          type: string
+          pattern: '^[A-Z]+[1-9][0-9]*$'
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - type: 'null'
+        formula:
+          type: string
+
+    CellRange:
+      type: object
+      required:
+        - start
+        - end
+      properties:
+        start:
+          type: string
+          pattern: '^[A-Z]+[1-9][0-9]*$'
+        end:
+          type: string
+          pattern: '^[A-Z]+[1-9][0-9]*$'
+
+    CellError:
+      type: object
+      required:
+        - address
+        - error
+      properties:
+        address:
+          type: string
+        error:
+          $ref: '#/components/schemas/FormulaError'
+
+    FormulaError:
+      type: object
+      required:
+        - type
+        - message
+      properties:
+        type:
+          type: string
+          enum: ['#DIV/0!', '#REF!', '#VALUE!', '#NAME?', '#CIRCULAR!', '#N/A', '#NULL!']
+        message:
+          type: string
+        details:
+          type: object
+
+    Row:
+      type: object
+      required:
+        - index
+        - height
+        - visible
+      properties:
+        index:
+          type: integer
+          minimum: 0
+        height:
+          type: number
+          minimum: 10
+          maximum: 500
+        visible:
+          type: boolean
+        frozen:
+          type: boolean
+
+    Column:
+      type: object
+      required:
+        - index
+        - width
+        - visible
+        - label
+      properties:
+        index:
+          type: integer
+          minimum: 0
+        width:
+          type: number
+          minimum: 20
+          maximum: 500
+        visible:
+          type: boolean
+        frozen:
+          type: boolean
+        label:
+          type: string

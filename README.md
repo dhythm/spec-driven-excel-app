@@ -33,6 +33,16 @@ uvx --from git+https://github.com/github/spec-kit.git specify init spec-driven-e
   同時接続ユーザーの上限は5にしてください。
 ```
 
+## 実装計画の作成
+
+```sh
+/plan 以下の技術スタックで実装計画を作成してください。
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- LocalStorage
+```
+
 ## 参考
 
 - [仕様駆動開発を支える Spec Kit を試してみた](https://azukiazusa.dev/blog/spec-driven-development-with-spec-kit/)
