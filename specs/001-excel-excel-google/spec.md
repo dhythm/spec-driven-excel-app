@@ -1,133 +1,128 @@
-# 機能仕様書: オンラインExcelライクテーブルエディタ
+# Feature Specification: オンラインスプレッドシートアプリケーション
 
-**機能ブランチ**: `001-excel-excel-google`
-**作成日**: 2025-09-14
-**ステータス**: ドラフト
-**入力**: ユーザー説明: "オンラインで Excel のように表の操作ができるアプリケーションを作成する。初期は複雑な機能は必要なく、表形式での入力や行列の追加、計算等ができることが望ましい。また、Excel/Google Spread Sheet に連携できるように、CSV 等での出力機能も必要である。将来的に、プロダクト内に Excel ライクな UI を実現するための調査・検証も兼ねた対応。"
+**Feature Branch**: `002-excel-excel-google`
+**Created**: 2025-09-14
+**Status**: Draft
+**Input**: User description: "オンラインで Excel のように表の操作ができるアプリケーションを作成する。初期は複雑な機能は必要なく、表形式での入力や行列の追加、計算等ができることが望ましい。また、Excel/Google Spread Sheet に連携できるように、CSV 等での出力機能も必要である。将来的に、プロダクト内に Excel ライクな UI を実現するための調査・検証も兼ねた対応。"
 
-## 実行フロー (main)
+## Execution Flow (main)
 ```
-1. 入力からユーザー説明を解析
-   → 空の場合: エラー "機能説明が提供されていません"
-2. 説明から主要概念を抽出
-   → 識別: アクター、アクション、データ、制約
-3. 不明瞭な各側面について:
-   → [要明確化: 具体的な質問] でマーク
-4. ユーザーシナリオとテストセクションを記入
-   → 明確なユーザーフローがない場合: エラー "ユーザーシナリオを決定できません"
-5. 機能要件を生成
-   → 各要件はテスト可能でなければならない
-   → 曖昧な要件をマーク
-6. 主要エンティティを特定（データが関与する場合）
-7. レビューチェックリストを実行
-   → [要明確化] がある場合: 警告 "仕様に不確実性があります"
-   → 実装詳細が見つかった場合: エラー "技術詳細を削除してください"
-8. 戻り値: 成功（仕様が計画準備完了）
+1. Parse user description from Input
+   → If empty: ERROR "No feature description provided"
+2. Extract key concepts from description
+   → Identify: actors, actions, data, constraints
+3. For each unclear aspect:
+   → Mark with [NEEDS CLARIFICATION: specific question]
+4. Fill User Scenarios & Testing section
+   → If no clear user flow: ERROR "Cannot determine user scenarios"
+5. Generate Functional Requirements
+   → Each requirement must be testable
+   → Mark ambiguous requirements
+6. Identify Key Entities (if data involved)
+7. Run Review Checklist
+   → If any [NEEDS CLARIFICATION]: WARN "Spec has uncertainties"
+   → If implementation details found: ERROR "Remove tech details"
+8. Return: SUCCESS (spec ready for planning)
 ```
 
 ---
 
-## ⚡ クイックガイドライン
-- ✅ ユーザーが何を必要とし、なぜ必要なのかに焦点を当てる
-- ❌ 実装方法を避ける（技術スタック、API、コード構造なし）
-- 👥 開発者ではなくビジネス関係者向けに書かれている
+## ⚡ Quick Guidelines
+- ✅ Focus on WHAT users need and WHY
+- ❌ Avoid HOW to implement (no tech stack, APIs, code structure)
+- 👥 Written for business stakeholders, not developers
 
-### セクション要件
-- **必須セクション**: すべての機能に対して完成させる必要がある
-- **オプションセクション**: 機能に関連する場合のみ含める
-- セクションが適用されない場合は、完全に削除する（「該当なし」として残さない）
+### Section Requirements
+- **Mandatory sections**: Must be completed for every feature
+- **Optional sections**: Include only when relevant to the feature
+- When a section doesn't apply, remove it entirely (don't leave as "N/A")
 
-### AI生成のために
-ユーザープロンプトからこの仕様を作成する際:
-1. **すべての曖昧さをマーク**: 仮定を立てる必要がある場合は [要明確化: 具体的な質問] を使用
-2. **推測しない**: プロンプトが何かを指定していない場合（例：認証方法なしの「ログインシステム」）、マークする
-3. **テスターのように考える**: すべての曖昧な要件は「テスト可能で明確」チェックリスト項目に失敗すべき
-4. **一般的な詳細不足の領域**:
-   - ユーザータイプと権限
-   - データ保持/削除ポリシー
-   - パフォーマンス目標とスケール
-   - エラー処理動作
-   - 統合要件
-   - セキュリティ/コンプライアンスのニーズ
-
----
-
-## ユーザーシナリオとテスト *(必須)*
-
-### 主要ユーザーストーリー
-ユーザーはWebブラウザ上でExcelのような表計算アプリケーションを使用できる。基本的な表の作成、データ入力、行列の追加・削除、簡単な計算を行い、最終的にCSV形式でデータをエクスポートして他のツール（Excel、Google Spreadsheet）で活用できる。
-
-### 受け入れシナリオ
-1. **前提条件** 空の表画面が表示されている状態, **操作** ユーザーがセルをクリックしてデータを入力する, **期待結果** 入力したデータがセルに表示され保存される
-2. **前提条件** データが入力された表が表示されている状態, **操作** ユーザーが行追加ボタンをクリックする, **期待結果** 新しい空の行が表の最後に追加される
-3. **前提条件** データが入力された表が表示されている状態, **操作** ユーザーが列追加ボタンをクリックする, **期待結果** 新しい空の列が表の右端に追加される
-4. **前提条件** 数値データが入力された表がある状態, **操作** ユーザーがセルに計算式（例：SUM関数）を入力する, **期待結果** 計算結果が自動的に表示される
-5. **前提条件** データが入力された表が表示されている状態, **操作** ユーザーがCSVエクスポートボタンをクリックする, **期待結果** 現在の表データがCSV形式でダウンロードされる
-6. **前提条件** CSVファイルを持っている状態, **操作** ユーザーがCSVインポート機能を使用する, **期待結果** CSVデータが表に読み込まれて表示される
-
-### エッジケース
-- 大量のデータ（[要明確化: 何行×何列までサポートするか？]）を入力した場合のパフォーマンス
-- 循環参照が発生する計算式を入力した場合の処理
-- 不正な計算式や数式を入力した場合のエラーハンドリング
-- 空のセルを含む行・列の削除時の動作
-- 異なる文字エンコーディングのCSVファイルのインポート
-- 特殊文字や改行を含むデータのCSVエクスポート
-
-## 要件 *(必須)*
-
-### 機能要件
-- **FR-001**: システムは表形式のグリッドインターフェースをユーザーに提供しなければならない
-- **FR-002**: ユーザーは任意のセルにテキスト、数値、日付データを入力できなければならない
-- **FR-003**: システムは行の追加・削除機能を提供しなければならない
-- **FR-004**: システムは列の追加・削除機能を提供しなければならない
-- **FR-005**: システムは基本的な計算機能（[要明確化: サポートする関数の具体的なリスト - SUM, AVERAGE, COUNT, etc.?]）を提供しなければならない
-- **FR-006**: システムは入力されたデータを自動保存しなければならない（[要明確化: 保存間隔、保存先、データ永続化の要件は？]）
-- **FR-007**: ユーザーは表データをCSV形式でエクスポートできなければならない
-- **FR-008**: ユーザーはCSVファイルをインポートして表に読み込めなければならない
-- **FR-009**: システムはセル内でのデータ編集（コピー、ペースト、削除）機能を提供しなければならない
-- **FR-010**: システムは複数セルの選択と一括操作（[要明確化: 一括削除、一括コピー、一括フォーマット等の具体的な操作は？]）をサポートしなければならない
-- **FR-011**: システムはユーザーの操作を元に戻す（Undo）・やり直す（Redo）機能を提供しなければならない（[要明確化: 何回分の操作履歴を保持するか？]）
-- **FR-012**: システムは表のサイズ制限を設けなければならない（[要明確化: 最大行数、最大列数、最大セル数は？]）
-- **FR-013**: システムはデータ検証機能を提供しなければならない（[要明確化: 数値のみ、日付形式等の検証ルールは？]）
-- **FR-014**: システムは複数ユーザーの同時アクセスを処理しなければならない（[要明確化: リアルタイム共同編集が必要か、個別のシートとして扱うか？]）
-
-### 主要エンティティ *(データが関与する場合に含める)*
-- **スプレッドシート**: 表全体を表すエンティティ。複数のセルを含み、名前、作成日時、最終更新日時を持つ
-- **セル**: 個々のデータ入力単位。行番号、列番号、値（テキスト/数値/数式）、データ型、書式設定を持つ
-- **行**: 水平方向のセルの集合。行番号と高さ設定を持つ
-- **列**: 垂直方向のセルの集合。列番号（またはアルファベット表記）と幅設定を持つ
-- **計算式**: セルに入力される数式。参照セル、演算子、関数名を持つ
-- **ユーザーセッション**: アプリケーションを使用するユーザーの作業状態。現在のシート、選択範囲、操作履歴を持つ
+### For AI Generation
+When creating this spec from a user prompt:
+1. **Mark all ambiguities**: Use [NEEDS CLARIFICATION: specific question] for any assumption you'd need to make
+2. **Don't guess**: If the prompt doesn't specify something (e.g., "login system" without auth method), mark it
+3. **Think like a tester**: Every vague requirement should fail the "testable and unambiguous" checklist item
+4. **Common underspecified areas**:
+   - User types and permissions
+   - Data retention/deletion policies
+   - Performance targets and scale
+   - Error handling behaviors
+   - Integration requirements
+   - Security/compliance needs
 
 ---
 
-## レビューと受け入れチェックリスト
-*ゲート: main()実行中に自動チェックが実行される*
+## User Scenarios & Testing *(mandatory)*
 
-### コンテンツ品質
-- [ ] 実装詳細なし（言語、フレームワーク、API）
-- [ ] ユーザー価値とビジネスニーズに焦点を当てている
-- [ ] 非技術的な関係者向けに書かれている
-- [ ] すべての必須セクションが完成している
+### Primary User Story
+ユーザーは、ブラウザ上でExcelやGoogle Spreadsheetsのようなスプレッドシートアプリケーションを使用して、データの入力、編集、計算を行い、その結果をCSV形式でダウンロードして他のツールと連携したい。
 
-### 要件の完全性
-- [ ] [要明確化] マーカーが残っていない
-- [ ] 要件がテスト可能で明確である
-- [ ] 成功基準が測定可能である
-- [ ] スコープが明確に定義されている
-- [ ] 依存関係と前提条件が特定されている
+### Acceptance Scenarios
+1. **Given** ユーザーがアプリケーションにアクセスした状態, **When** 新しいスプレッドシートを作成する, **Then** 空の表形式のグリッドが表示される
+2. **Given** スプレッドシートが表示されている状態, **When** セルをクリックして値を入力する, **Then** 入力した値がセルに保存され表示される
+3. **Given** データが入力されたスプレッドシート, **When** 行または列の追加ボタンをクリックする, **Then** 新しい行または列が追加される
+4. **Given** 数値が入力された複数のセル, **When** 計算式を別のセルに入力する, **Then** 計算結果が自動的に表示される
+5. **Given** データが入力されたスプレッドシート, **When** CSVエクスポートボタンをクリックする, **Then** CSVファイルがダウンロードされる
+
+### Edge Cases
+- 大量のデータ（1000行×1000列）を入力した場合のパフォーマンス
+- 不正な計算式（循環参照、ゼロ除算など）を入力した場合のエラーハンドリング
+- 複数ユーザーが同時にアクセスした場合の動作（初期版ではリアルタイム共同編集は非対応）
+- インポートされたCSVファイルの文字エンコーディングや形式が不正な場合
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+- **FR-001**: システムは、ユーザーが表形式のグリッド上でデータを入力・編集できる機能を提供しなければならない
+- **FR-002**: システムは、行および列の追加・削除機能を提供しなければならない
+- **FR-003**: システムは、基本的な計算機能（四則演算、SUM、AVERAGE等）をサポートしなければならない
+- **FR-004**: システムは、スプレッドシートのデータをCSV形式でエクスポートする機能を提供しなければならない
+- **FR-005**: システムは、CSVファイルをインポートしてスプレッドシートに読み込む機能を提供しなければならない
+- **FR-006**: システムは、将来的にセルの書式設定機能を追加できる拡張性を持たなければならない（初期版では書式設定は非対応）
+- **FR-007**: システムは、作成したスプレッドシートをローカルストレージに保存する機能を提供しなければならない（将来的にクラウドストレージへの移行が可能な設計とする）
+- **FR-008**: システムは、保存したスプレッドシートを読み込む機能を提供しなければならない
+- **FR-009**: システムは、計算式のエラーを検出し、ユーザーに分かりやすく表示しなければならない
+- **FR-010**: システムは、セルの選択、コピー、ペースト機能を提供しなければならない
+- **FR-011**: システムは、元に戻す（Undo）とやり直し（Redo）機能を提供しなければならない
+- **FR-012**: システムは、最大1000行×1000列のグリッドサイズをサポートしなければならない
+- **FR-013**: システムは、最大5人の同時接続ユーザーをサポートしなければならない
+
+### Key Entities *(include if feature involves data)*
+- **スプレッドシート**: 複数のセルで構成される表形式のデータ構造。名前、作成日時、最終更新日時を持つ
+- **セル**: スプレッドシートの最小単位。行番号、列番号、値、計算式を持つ
+- **行**: 横方向のセルの集合。高さ、表示/非表示状態を持つ
+- **列**: 縦方向のセルの集合。幅、表示/非表示状態を持つ
+- **計算式**: セルに入力される数式。参照セル、演算子、関数で構成される
 
 ---
 
-## 実行ステータス
-*main()処理中に更新される*
+## Review & Acceptance Checklist
+*GATE: Automated checks run during main() execution*
 
-- [x] ユーザー説明を解析済み
-- [x] 主要概念を抽出済み
-- [x] 曖昧さをマーク済み
-- [x] ユーザーシナリオを定義済み
-- [x] 要件を生成済み
-- [x] エンティティを特定済み
-- [ ] レビューチェックリストをパス（要明確化マーカーを含む）
+### Content Quality
+- [x] No implementation details (languages, frameworks, APIs)
+- [x] Focused on user value and business needs
+- [x] Written for non-technical stakeholders
+- [x] All mandatory sections completed
+
+### Requirement Completeness
+- [x] No [NEEDS CLARIFICATION] markers remain
+- [x] Requirements are testable and unambiguous
+- [x] Success criteria are measurable
+- [x] Scope is clearly bounded
+- [x] Dependencies and assumptions identified
+
+---
+
+## Execution Status
+*Updated by main() during processing*
+
+- [x] User description parsed
+- [x] Key concepts extracted
+- [x] Ambiguities marked
+- [x] User scenarios defined
+- [x] Requirements generated
+- [x] Entities identified
+- [x] Review checklist passed
 
 ---
