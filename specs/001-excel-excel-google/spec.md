@@ -1,6 +1,6 @@
 # Feature Specification: オンラインスプレッドシートアプリケーション
 
-**Feature Branch**: `002-excel-excel-google`
+**Feature Branch**: `001-excel-excel-google`
 **Created**: 2025-09-14
 **Status**: Draft
 **Input**: User description: "オンラインで Excel のように表の操作ができるアプリケーションを作成する。初期は複雑な機能は必要なく、表形式での入力や行列の追加、計算等ができることが望ましい。また、Excel/Google Spread Sheet に連携できるように、CSV 等での出力機能も必要である。将来的に、プロダクト内に Excel ライクな UI を実現するための調査・検証も兼ねた対応。"

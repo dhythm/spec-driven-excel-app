@@ -43,6 +43,17 @@ uvx --from git+https://github.com/github/spec-kit.git specify init spec-driven-e
 - LocalStorage
 ```
 
+```
+今度は実装計画と実装詳細ファイルを監査してもらいたいと思います。
+これらを読み通して、読むことで明らかになる、あなたが行う必要のあるタスクの順序があるかどうかを判断する視点で確認してください。ここに十分な情報があるかどうか分からないからです。例えば、コア実装を見ると、コア実装や改良の各ステップを進める際に、情報を見つけることができる実装詳細の適切な場所を参照できると有用でしょう。
+```
+
+## タスクの作成
+
+```sh
+/tasks
+```
+
 ## 参考
 
 - [仕様駆動開発を支える Spec Kit を試してみた](https://azukiazusa.dev/blog/spec-driven-development-with-spec-kit/)
