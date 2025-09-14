@@ -54,6 +54,12 @@ uvx --from git+https://github.com/github/spec-kit.git specify init spec-driven-e
 /tasks
 ```
 
+## タスクの実行
+
+```
+タスクを実行してください
+```
+
 ## 参考
 
 - [仕様駆動開発を支える Spec Kit を試してみた](https://azukiazusa.dev/blog/spec-driven-development-with-spec-kit/)
