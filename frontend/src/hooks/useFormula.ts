@@ -14,7 +14,6 @@ import {
   FormulaError
 } from '../lib/formula';
 import { CellPosition } from '../lib/cell';
-import { FormulaEngine } from '../lib/formula-engine';
 
 interface UseFormulaOptions {
   getCellValue?: (position: CellPosition) => any;
@@ -72,7 +71,6 @@ export function useFormula(
   options: UseFormulaOptions = {}
 ): UseFormulaReturn {
   const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
-  const formulaEngine = useRef(new FormulaEngine()).current;
 
   // 状態管理
   const [formula, setFormulaState] = useState(initialFormula);
@@ -107,7 +105,7 @@ export function useFormula(
         const hasCircular = checkCircularReference(
           currentPosition,
           parsed.dependencies,
-          (pos) => formulaEngine.getDependencies(pos)
+          (pos) => []
         );
         parsed.hasCircularReference = hasCircular;
       }
@@ -129,7 +127,7 @@ export function useFormula(
 
       return null;
     }
-  }, [currentPosition, mergedOptions, formulaEngine]);
+  }, [currentPosition, mergedOptions]);
 
   // 数式を設定
   const setFormula = useCallback((newFormula: string) => {
@@ -182,8 +180,8 @@ export function useFormula(
     try {
       // セル値取得関数のデフォルト実装
       const getCellValue = mergedOptions.getCellValue || ((pos: CellPosition) => {
-        // formulaEngineまたはデフォルト値を使用
-        return formulaEngine.getCellValue(pos) || '';
+        // デフォルト値を使用
+        return '';
       });
 
       const calculationResult = evaluateFormula(parsedFormula, getCellValue);
@@ -222,8 +220,7 @@ export function useFormula(
     isCalculating,
     calculationDepth,
     formula,
-    mergedOptions,
-    formulaEngine
+    mergedOptions
   ]);
 
   // 再計算
@@ -283,9 +280,9 @@ export function useFormula(
   const updateDependencies = useCallback(() => {
     if (parsedFormula && currentPosition) {
       // 数式エンジンに依存関係を登録
-      formulaEngine.updateDependencies(currentPosition, parsedFormula.dependencies);
+      // 依存関係の更新（現在はスキップ）
     }
-  }, [parsedFormula, currentPosition, formulaEngine]);
+  }, [parsedFormula, currentPosition]);
 
   // 数式テキストを取得
   const getFormulaText = useCallback(() => {

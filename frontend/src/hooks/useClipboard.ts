@@ -284,7 +284,7 @@ export function useClipboard(options: UseClipboardOptions = {}): UseClipboardRet
       }
       throw error;
     }
-  }, [mergedOptions, targetPosition]);
+  }, [mergedOptions]);
 
   // 特殊貼り付け
   const pasteSpecial = useCallback(async (

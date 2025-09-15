@@ -15,7 +15,6 @@ import {
 } from '../lib/spreadsheet';
 import { Cell, CellPosition, createEmptyCell } from '../lib/cell';
 import { StorageManager } from '../lib/storage-manager';
-import { initializeFormulaEngine, evaluateFormula, updateFormulaValue } from '../lib/formula-engine';
 
 interface UseSpreadsheetOptions {
   config?: SpreadsheetConfig;
@@ -65,7 +64,6 @@ const DEFAULT_OPTIONS: UseSpreadsheetOptions = {
 export function useSpreadsheet(options: UseSpreadsheetOptions = {}): UseSpreadsheetReturn {
   const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
   const storageManager = useMemo(() => new StorageManager(), []);
-  const [formulaEngine, setFormulaEngine] = useState<any>(null);
 
   // 状態管理
   const [spreadsheet, setSpreadsheet] = useState<Spreadsheet>(() =>
@@ -140,37 +138,17 @@ export function useSpreadsheet(options: UseSpreadsheetOptions = {}): UseSpreadsh
     }
   }, [spreadsheet, validate, storageManager]);
 
-  // セルを設定（数式対応）
-  const setCell = useCallback(async (position: CellPosition, cell: Cell) => {
+  // セルを設定
+  const setCell = useCallback((position: CellPosition, cell: Cell) => {
     try {
-      let finalCell = { ...cell };
-
-      // 数式の場合は計算結果を取得
-      if (cell.rawValue && typeof cell.rawValue === 'string' && cell.rawValue.startsWith('=')) {
-        if (formulaEngine) {
-          const evalResult = await evaluateFormula(cell.rawValue, spreadsheet);
-          if (evalResult.success && evalResult.data) {
-            finalCell.displayValue = String(evalResult.data.value);
-            finalCell.dataType = evalResult.data.dataType;
-            // rawValueは数式のまま保持
-          }
-        }
-      }
-
-      const updatedSpreadsheet = setCellInSpreadsheet(spreadsheet, position, finalCell);
+      const updatedSpreadsheet = setCellInSpreadsheet(spreadsheet, position, cell);
       setSpreadsheet(updatedSpreadsheet);
       setHasUnsavedChanges(true);
-
-      // 数式エンジンを更新
-      if (formulaEngine && cell.rawValue && typeof cell.rawValue === 'string' && cell.rawValue.startsWith('=')) {
-        const address = `${String.fromCharCode(65 + position.column)}${position.row + 1}`;
-        await updateFormulaValue(address, cell.rawValue, updatedSpreadsheet);
-      }
     } catch (error) {
       console.error('セル設定エラー:', error);
       throw error;
     }
-  }, [spreadsheet, formulaEngine]);
+  }, [spreadsheet]);
 
   // セルを取得
   const getCell = useCallback((position: CellPosition) => {
@@ -376,17 +354,6 @@ export function useSpreadsheet(options: UseSpreadsheetOptions = {}): UseSpreadsh
     setIsLoading(false);
     setIsSaving(false);
   }, [mergedOptions.config]);
-
-  // 数式エンジンの初期化
-  useEffect(() => {
-    const initEngine = async () => {
-      if (!formulaEngine) {
-        const engine = await initializeFormulaEngine();
-        setFormulaEngine(engine);
-      }
-    };
-    initEngine();
-  }, [formulaEngine]);
 
   // 自動保存機能
   useEffect(() => {
