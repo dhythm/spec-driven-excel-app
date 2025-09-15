@@ -41,99 +41,99 @@
 - Based on plan.md structure decision
 
 ## Phase 3.1: Setup
-- [ ] T001 Create project structure per implementation plan (frontend/, cli/, specs/)
-- [ ] T002 Initialize Next.js 14+ project with TypeScript in frontend/
-- [ ] T003 [P] Install core dependencies (React 18, Tailwind CSS 3.4+)
-- [ ] T004 [P] Install spreadsheet dependencies (@tanstack/react-virtual, hyperformula, papaparse)
-- [ ] T005 [P] Configure ESLint and Prettier for TypeScript/React
-- [ ] T006 [P] Setup Jest and React Testing Library
-- [ ] T007 Create base directory structure for libraries in frontend/src/lib/
+- [x] T001 Create project structure per implementation plan (frontend/, cli/, specs/)
+- [x] T002 Initialize Next.js 14+ project with TypeScript in frontend/
+- [x] T003 [P] Install core dependencies (React 18, Tailwind CSS 3.4+)
+- [x] T004 [P] Install spreadsheet dependencies (@tanstack/react-virtual, hyperformula, papaparse)
+- [x] T005 [P] Configure ESLint and Prettier for TypeScript/React
+- [x] T006 [P] Setup Jest and React Testing Library
+- [x] T007 Create base directory structure for libraries in frontend/src/lib/
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 
 ### Contract Tests
-- [ ] T008 [P] Contract test for createSpreadsheet in frontend/tests/contract/test_spreadsheet_create.ts
-- [ ] T009 [P] Contract test for updateCells in frontend/tests/contract/test_cells_update.ts
-- [ ] T010 [P] Contract test for recalculate in frontend/tests/contract/test_formula_calculate.ts
-- [ ] T011 [P] Contract test for exportCsv in frontend/tests/contract/test_csv_export.ts
-- [ ] T012 [P] Contract test for importCsv in frontend/tests/contract/test_csv_import.ts
+- [x] T008 [P] Contract test for createSpreadsheet in frontend/tests/contract/test_spreadsheet_create.ts
+- [x] T009 [P] Contract test for updateCells in frontend/tests/contract/test_cells_update.ts
+- [x] T010 [P] Contract test for recalculate in frontend/tests/contract/test_formula_calculate.ts
+- [x] T011 [P] Contract test for exportCsv in frontend/tests/contract/test_csv_export.ts
+- [x] T012 [P] Contract test for importCsv in frontend/tests/contract/test_csv_import.ts
 
 ### Integration Tests
-- [ ] T013 [P] Integration test for new spreadsheet creation scenario in frontend/tests/integration/test_spreadsheet_creation.ts
-- [ ] T014 [P] Integration test for cell editing and calculation scenario in frontend/tests/integration/test_cell_calculation.ts
-- [ ] T015 [P] Integration test for CSV import/export flow in frontend/tests/integration/test_csv_flow.ts
-- [ ] T016 [P] Integration test for formula error handling in frontend/tests/integration/test_formula_errors.ts
-- [ ] T017 [P] Integration test for data persistence with LocalStorage in frontend/tests/integration/test_persistence.ts
+- [x] T013 [P] Integration test for new spreadsheet creation scenario in frontend/tests/integration/test_spreadsheet_creation.ts
+- [x] T014 [P] Integration test for cell editing and calculation scenario in frontend/tests/integration/test_cell_calculation.ts
+- [x] T015 [P] Integration test for CSV import/export flow in frontend/tests/integration/test_csv_flow.ts
+- [x] T016 [P] Integration test for formula error handling in frontend/tests/integration/test_formula_errors.ts
+- [x] T017 [P] Integration test for data persistence with LocalStorage in frontend/tests/integration/test_persistence.ts
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 
 ### Data Models
-- [ ] T018 [P] Spreadsheet model in frontend/src/lib/spreadsheet-core/models/spreadsheet.ts
-- [ ] T019 [P] Cell model in frontend/src/lib/spreadsheet-core/models/cell.ts
-- [ ] T020 [P] Row model in frontend/src/lib/spreadsheet-core/models/row.ts
-- [ ] T021 [P] Column model in frontend/src/lib/spreadsheet-core/models/column.ts
-- [ ] T022 [P] Formula model in frontend/src/lib/formula-engine/models/formula.ts
-- [ ] T023 [P] Selection model in frontend/src/lib/spreadsheet-core/models/selection.ts
-- [ ] T024 [P] ClipboardData model in frontend/src/lib/spreadsheet-core/models/clipboard.ts
-- [ ] T025 [P] HistoryEntry model for undo/redo in frontend/src/lib/spreadsheet-core/models/history.ts
+- [x] T018 [P] Spreadsheet model in frontend/src/lib/spreadsheet-core/models/spreadsheet.ts
+- [x] T019 [P] Cell model in frontend/src/lib/spreadsheet-core/models/cell.ts
+- [x] T020 [P] Row model in frontend/src/lib/spreadsheet-core/models/row.ts
+- [x] T021 [P] Column model in frontend/src/lib/spreadsheet-core/models/column.ts
+- [x] T022 [P] Formula model in frontend/src/lib/formula-engine/models/formula.ts
+- [x] T023 [P] Selection model in frontend/src/lib/spreadsheet-core/models/selection.ts
+- [x] T024 [P] ClipboardData model in frontend/src/lib/spreadsheet-core/models/clipboard.ts
+- [x] T025 [P] HistoryEntry model for undo/redo in frontend/src/lib/spreadsheet-core/models/history.ts
 
 ### Core Libraries
-- [ ] T026 Spreadsheet-core library functions in frontend/src/lib/spreadsheet-core/index.ts
-- [ ] T027 Cell operations (update, delete, format) in frontend/src/lib/spreadsheet-core/operations.ts
-- [ ] T028 Grid management (add/remove rows/columns) in frontend/src/lib/spreadsheet-core/grid.ts
-- [ ] T029 Formula engine wrapper for HyperFormula in frontend/src/lib/formula-engine/index.ts
-- [ ] T030 Formula parsing and calculation in frontend/src/lib/formula-engine/calculator.ts
-- [ ] T031 Dependency graph management in frontend/src/lib/formula-engine/dependencies.ts
-- [ ] T032 CSV handler with Papa Parse in frontend/src/lib/csv-handler/index.ts
-- [ ] T033 CSV export functionality in frontend/src/lib/csv-handler/export.ts
-- [ ] T034 CSV import functionality in frontend/src/lib/csv-handler/import.ts
-- [ ] T035 Storage manager for LocalStorage in frontend/src/lib/storage-manager/index.ts
-- [ ] T036 Data compression for storage in frontend/src/lib/storage-manager/compression.ts
+- [x] T026 Spreadsheet-core library functions in frontend/src/lib/spreadsheet-core/index.ts
+- [x] T027 Cell operations (update, delete, format) in frontend/src/lib/spreadsheet-core/operations.ts
+- [x] T028 Grid management (add/remove rows/columns) in frontend/src/lib/spreadsheet-core/grid.ts
+- [x] T029 Formula engine wrapper for HyperFormula in frontend/src/lib/formula-engine/index.ts
+- [x] T030 Formula parsing and calculation in frontend/src/lib/formula-engine/calculator.ts
+- [x] T031 Dependency graph management in frontend/src/lib/formula-engine/dependencies.ts
+- [x] T032 CSV handler with Papa Parse in frontend/src/lib/csv-handler/index.ts
+- [x] T033 CSV export functionality in frontend/src/lib/csv-handler/export.ts
+- [x] T034 CSV import functionality in frontend/src/lib/csv-handler/import.ts
+- [x] T035 Storage manager for LocalStorage in frontend/src/lib/storage-manager/index.ts
+- [x] T036 Data compression for storage in frontend/src/lib/storage-manager/compression.ts
 
 ### React Components
-- [ ] T037 Main SpreadsheetApp component in frontend/src/components/SpreadsheetApp.tsx
-- [ ] T038 Grid component with virtual scrolling in frontend/src/components/Grid/Grid.tsx
-- [ ] T039 VirtualizedRows component in frontend/src/components/Grid/VirtualizedRows.tsx
-- [ ] T040 Cell component (memoized) in frontend/src/components/Cell/Cell.tsx
-- [ ] T041 Cell editor component in frontend/src/components/Cell/CellEditor.tsx
-- [ ] T042 FormulaBar component in frontend/src/components/FormulaBar/FormulaBar.tsx
-- [ ] T043 Toolbar component in frontend/src/components/Toolbar/Toolbar.tsx
-- [ ] T044 StatusBar component in frontend/src/components/StatusBar/StatusBar.tsx
+- [x] T037 Main SpreadsheetApp component in frontend/src/components/SpreadsheetApp.tsx
+- [x] T038 Grid component with virtual scrolling in frontend/src/components/Grid/Grid.tsx
+- [x] T039 VirtualizedRows component in frontend/src/components/Grid/VirtualizedRows.tsx
+- [x] T040 Cell component (memoized) in frontend/src/components/Cell/Cell.tsx
+- [x] T041 Cell editor component in frontend/src/components/Cell/CellEditor.tsx
+- [x] T042 FormulaBar component in frontend/src/components/FormulaBar/FormulaBar.tsx
+- [x] T043 Toolbar component in frontend/src/components/Toolbar/Toolbar.tsx
+- [x] T044 StatusBar component in frontend/src/components/StatusBar/StatusBar.tsx
 
 ### Custom Hooks
-- [ ] T045 [P] useSpreadsheet hook in frontend/src/hooks/useSpreadsheet.ts
-- [ ] T046 [P] useCell hook in frontend/src/hooks/useCell.ts
-- [ ] T047 [P] useFormula hook in frontend/src/hooks/useFormula.ts
-- [ ] T048 [P] useSelection hook in frontend/src/hooks/useSelection.ts
-- [ ] T049 [P] useClipboard hook in frontend/src/hooks/useClipboard.ts
-- [ ] T050 [P] useHistory hook for undo/redo in frontend/src/hooks/useHistory.ts
+- [x] T045 [P] useSpreadsheet hook in frontend/src/hooks/useSpreadsheet.ts
+- [x] T046 [P] useCell hook in frontend/src/hooks/useCell.ts
+- [x] T047 [P] useFormula hook in frontend/src/hooks/useFormula.ts
+- [x] T048 [P] useSelection hook in frontend/src/hooks/useSelection.ts
+- [x] T049 [P] useClipboard hook in frontend/src/hooks/useClipboard.ts
+- [x] T050 [P] useHistory hook for undo/redo in frontend/src/hooks/useHistory.ts
 
 ### API Routes (Next.js App Router)
-- [ ] T051 GET /api/spreadsheets route in frontend/src/app/api/spreadsheets/route.ts
-- [ ] T052 POST /api/spreadsheets route in frontend/src/app/api/spreadsheets/route.ts
-- [ ] T053 GET /api/spreadsheets/[id] route in frontend/src/app/api/spreadsheets/[id]/route.ts
-- [ ] T054 PUT /api/spreadsheets/[id] route in frontend/src/app/api/spreadsheets/[id]/route.ts
-- [ ] T055 PATCH /api/spreadsheets/[id]/cells route in frontend/src/app/api/spreadsheets/[id]/cells/route.ts
-- [ ] T056 POST /api/spreadsheets/[id]/calculate route in frontend/src/app/api/spreadsheets/[id]/calculate/route.ts
-- [ ] T057 GET /api/spreadsheets/[id]/export/csv route in frontend/src/app/api/spreadsheets/[id]/export/csv/route.ts
-- [ ] T058 POST /api/spreadsheets/[id]/import/csv route in frontend/src/app/api/spreadsheets/[id]/import/csv/route.ts
+- [x] T051 GET /api/spreadsheets route in frontend/src/app/api/spreadsheets/route.ts
+- [x] T052 POST /api/spreadsheets route in frontend/src/app/api/spreadsheets/route.ts
+- [x] T053 GET /api/spreadsheets/[id] route in frontend/src/app/api/spreadsheets/[id]/route.ts
+- [x] T054 PUT /api/spreadsheets/[id] route in frontend/src/app/api/spreadsheets/[id]/route.ts
+- [x] T055 PATCH /api/spreadsheets/[id]/cells route in frontend/src/app/api/spreadsheets/[id]/cells/route.ts
+- [x] T056 POST /api/spreadsheets/[id]/calculate route in frontend/src/app/api/spreadsheets/[id]/calculate/route.ts
+- [x] T057 GET /api/spreadsheets/[id]/export/csv route in frontend/src/app/api/spreadsheets/[id]/export/csv/route.ts
+- [x] T058 POST /api/spreadsheets/[id]/import/csv route in frontend/src/app/api/spreadsheets/[id]/import/csv/route.ts
 
 ### CLI Tools
-- [ ] T059 [P] Spreadsheet CLI base in cli/spreadsheet-cli/index.ts
-- [ ] T060 [P] Formula CLI base in cli/formula-cli/index.ts
-- [ ] T061 [P] CSV CLI base in cli/csv-cli/index.ts
-- [ ] T062 [P] Storage CLI base in cli/storage-cli/index.ts
+- [x] T059 [P] Spreadsheet CLI base in cli/spreadsheet-cli/index.ts
+- [x] T060 [P] Formula CLI base in cli/formula-cli/index.ts
+- [x] T061 [P] CSV CLI base in cli/csv-cli/index.ts
+- [x] T062 [P] Storage CLI base in cli/storage-cli/index.ts
 
 ## Phase 3.4: Integration
-- [ ] T063 Connect storage-manager to spreadsheet-core
-- [ ] T064 Integrate formula-engine with cell updates
-- [ ] T065 Wire up CSV import/export with grid data
-- [ ] T066 Implement auto-save with debouncing (3 seconds)
-- [ ] T067 Add error boundaries for React components
-- [ ] T068 Implement keyboard shortcuts (Ctrl+C/V/Z/Y/S)
-- [ ] T069 Add context menu for cells
-- [ ] T070 Implement cell selection and range selection
+- [x] T063 Connect storage-manager to spreadsheet-core
+- [x] T064 Integrate formula-engine with cell updates
+- [x] T065 Wire up CSV import/export with grid data
+- [x] T066 Implement auto-save with debouncing (3 seconds)
+- [x] T067 Add error boundaries for React components
+- [x] T068 Implement keyboard shortcuts (Ctrl+C/V/Z/Y/S)
+- [x] T069 Add context menu for cells
+- [x] T070 Implement cell selection and range selection
 
 ## Phase 3.5: Polish
 - [ ] T071 [P] Unit tests for validation in frontend/tests/unit/test_validation.ts
@@ -245,4 +245,6 @@ Task: "Storage CLI base in cli/storage-cli/index.ts"
 ---
 *Generated from plan.md, data-model.md, contracts/spreadsheet-api.yaml, research.md*
 *Total tasks: 80*
-*Estimated parallel execution opportunities: 6 batches*
+*Completed tasks: 70 (87.5%)*
+*Remaining tasks: 10 (Phase 3.5: Polish)*
+*Last updated: 2025-09-16*
