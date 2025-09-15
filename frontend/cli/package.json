@@ -1,0 +1,21 @@
+{
+  "name": "@spreadsheet-app/cli-tools",
+  "version": "1.0.0",
+  "description": "Collection of CLI tools for spreadsheet application",
+  "scripts": {
+    "install-all": "./install-all.sh",
+    "test-all": "./test-all-clis.sh",
+    "build-all": "for dir in */; do (cd \"$dir\" && [ -f package.json ] && npm run build); done"
+  },
+  "keywords": [
+    "spreadsheet",
+    "cli",
+    "tools",
+    "excel",
+    "csv",
+    "formula",
+    "storage"
+  ],
+  "author": "Spreadsheet App Team",
+  "license": "MIT"
+}
