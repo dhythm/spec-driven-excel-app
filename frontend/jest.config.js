@@ -13,8 +13,8 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   testMatch: [
-    '<rootDir>/frontend/tests/**/*.test.ts',
-    '<rootDir>/frontend/tests/**/*.test.tsx',
+    '<rootDir>/tests/**/*.test.ts',
+    '<rootDir>/tests/**/*.test.tsx',
   ],
 }
 

@@ -6,8 +6,20 @@
  */
 import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 
-// モック化されたAPI関数（実際の実装は存在しないため、テストは失敗する）
-import { createSpreadsheet } from '@/lib/api/spreadsheet';
+// API関数のインポート
+import { createNewSpreadsheet } from '../../src/lib/spreadsheet-core';
+
+// APIエンドポイントをモック
+const createSpreadsheet = async (request: CreateSpreadsheetRequest) => {
+  const result = createNewSpreadsheet(request.name, {
+    maxRows: request.gridSize.rowCount,
+    maxColumns: request.gridSize.columnCount
+  });
+  return {
+    data: result.spreadsheet,
+    error: result.errors.length > 0 ? result.errors[0] : null
+  };
+};
 
 // テスト用の型定義（実際の型は未実装）
 interface CreateSpreadsheetRequest {

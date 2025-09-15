@@ -29,6 +29,8 @@ export function Toolbar({ spreadsheet, selection, onAction }: ToolbarProps) {
   const handleOpen = useCallback(() => handleAction('file:open'), [handleAction]);
   const handleSave = useCallback(() => handleAction('file:save'), [handleAction]);
   const handleExport = useCallback(() => handleAction('file:export'), [handleAction]);
+  const handleImportCSV = useCallback(() => handleAction('file:import:csv'), [handleAction]);
+  const handleExportCSV = useCallback(() => handleAction('file:export:csv'), [handleAction]);
 
   // 編集操作
   const handleUndo = useCallback(() => handleAction('edit:undo'), [handleAction]);
@@ -81,6 +83,22 @@ export function Toolbar({ spreadsheet, selection, onAction }: ToolbarProps) {
           title="エクスポート"
           icon="📤"
           label="エクスポート"
+        />
+      </div>
+
+      {/* CSV操作 */}
+      <div className="flex items-center space-x-1 px-2 border-r border-gray-300">
+        <ToolbarButton
+          onClick={handleImportCSV}
+          title="CSVインポート"
+          icon="📥"
+          label="CSV読込"
+        />
+        <ToolbarButton
+          onClick={handleExportCSV}
+          title="CSVエクスポート"
+          icon="📊"
+          label="CSV保存"
         />
       </div>
 

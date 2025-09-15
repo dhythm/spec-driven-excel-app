@@ -19,6 +19,7 @@ export interface VirtualizedRowsProps {
   onRowHeaderClick: (rowIndex: number) => void;
   onCellEditComplete: (position: CellPosition, value: string) => void;
   onCellEditCancel: () => void;
+  onContextMenu?: (event: React.MouseEvent, position: CellPosition) => void;
 }
 
 const ROW_HEIGHT = 24;
@@ -37,6 +38,7 @@ export const VirtualizedRows = memo(function VirtualizedRows({
   onRowHeaderClick,
   onCellEditComplete,
   onCellEditCancel,
+  onContextMenu,
 }: VirtualizedRowsProps) {
   return (
     <>
@@ -54,6 +56,7 @@ export const VirtualizedRows = memo(function VirtualizedRows({
           onRowHeaderClick={onRowHeaderClick}
           onCellEditComplete={onCellEditComplete}
           onCellEditCancel={onCellEditCancel}
+          onContextMenu={onContextMenu}
         />
       ))}
     </>
@@ -72,6 +75,7 @@ interface VirtualizedRowProps {
   onRowHeaderClick: (rowIndex: number) => void;
   onCellEditComplete: (position: CellPosition, value: string) => void;
   onCellEditCancel: () => void;
+  onContextMenu?: (event: React.MouseEvent, position: CellPosition) => void;
 }
 
 const VirtualizedRow = memo(function VirtualizedRow({
@@ -86,6 +90,7 @@ const VirtualizedRow = memo(function VirtualizedRow({
   onRowHeaderClick,
   onCellEditComplete,
   onCellEditCancel,
+  onContextMenu,
 }: VirtualizedRowProps) {
   const rowIndex = row.index;
 
@@ -150,6 +155,7 @@ const VirtualizedRow = memo(function VirtualizedRow({
               onDoubleClick={() => onCellDoubleClick(rowIndex, columnIndex)}
               onEditComplete={(value) => onCellEditComplete(position, value)}
               onEditCancel={onCellEditCancel}
+              onContextMenu={(event) => onContextMenu?.(event, position)}
             />
           );
         })}

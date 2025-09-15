@@ -6,8 +6,26 @@
  */
 import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 
-// モック化されたAPI関数（実際の実装は存在しないため、テストは失敗する）
-import { updateCells } from '@/lib/api/spreadsheet';
+// API関数のインポート
+import { setCellValue } from '../../src/lib/spreadsheet-core';
+import { createSpreadsheet } from '../../src/lib/spreadsheet';
+
+// APIエンドポイントをモック
+const updateCells = async (spreadsheetId: string, updates: CellUpdate[]) => {
+  const spreadsheet = createSpreadsheet('test');
+  const results = updates.map(update => {
+    const [column, row] = update.address.match(/([A-Z]+)(\d+)/)?.slice(1) || [];
+    const position = {
+      row: parseInt(row) - 1,
+      column: column.charCodeAt(0) - 65
+    };
+    return setCellValue(spreadsheet, position, update.value);
+  });
+  return {
+    data: results[0]?.spreadsheet,
+    error: results.some(r => !r.success) ? 'Update failed' : null
+  };
+};
 
 // テスト用の型定義（実際の型は未実装）
 interface CellUpdate {

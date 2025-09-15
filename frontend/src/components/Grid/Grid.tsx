@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useMemo, useRef, useEffect, useCallback } from 'react';
+import React, { useMemo, useRef, useEffect, useCallback, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { VirtualizedRows } from './VirtualizedRows';
 import { Spreadsheet } from '../../lib/spreadsheet';
 import { Selection, isCellSelected } from '../../lib/selection';
 import { CellPosition } from '../../lib/cell';
+import { ContextMenu, getCellContextMenuItems } from '../ContextMenu';
 
 export interface GridProps {
   spreadsheet: Spreadsheet;
@@ -13,6 +14,7 @@ export interface GridProps {
   isEditing: boolean;
   editingValue: string;
   onCellSelect: (position: CellPosition) => void;
+  onRangeSelect?: (selection: Selection) => void;
   onCellEditStart: (position: CellPosition, value: string) => void;
   onCellEditComplete: (position: CellPosition, value: string) => void;
   onCellEditCancel: () => void;
@@ -29,12 +31,24 @@ export function Grid({
   isEditing,
   editingValue,
   onCellSelect,
+  onRangeSelect,
   onCellEditStart,
   onCellEditComplete,
   onCellEditCancel,
 }: GridProps) {
   const parentRef = useRef<HTMLDivElement>(null);
   const scrollElementRef = useRef<HTMLDivElement>(null);
+
+  // コンテキストメニューの状態
+  const [contextMenu, setContextMenu] = useState<{
+    isOpen: boolean;
+    position: { x: number; y: number };
+    cellPosition: CellPosition | null;
+  }>({
+    isOpen: false,
+    position: { x: 0, y: 0 },
+    cellPosition: null
+  });
 
   // 行の仮想化
   const rowVirtualizer = useVirtualizer({
@@ -43,6 +57,41 @@ export function Grid({
     estimateSize: () => ROW_HEIGHT,
     overscan: 5,
   });
+
+  // コンテキストメニューハンドラー
+  const handleContextMenu = useCallback((event: React.MouseEvent, position: CellPosition) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setContextMenu({
+      isOpen: true,
+      position: { x: event.clientX, y: event.clientY },
+      cellPosition: position
+    });
+
+    // セルを選択
+    onCellSelect(position);
+  }, [onCellSelect]);
+
+  const handleCloseContextMenu = useCallback(() => {
+    setContextMenu(prev => ({ ...prev, isOpen: false }));
+  }, []);
+
+  // コンテキストメニューアイテムの取得
+  const contextMenuItems = useMemo(() => {
+    if (!contextMenu.cellPosition) return [];
+
+    const cellKey = `${contextMenu.cellPosition.row}-${contextMenu.cellPosition.column}`;
+    const cell = spreadsheet.cells.get(cellKey);
+    const hasValue = !!cell?.rawValue;
+
+    // TODO: 実際のクリップボードや履歴の状態を取得
+    const hasClipboard = false;
+    const canUndo = false;
+    const canRedo = false;
+
+    return getCellContextMenuItems(hasValue, hasClipboard, canUndo, canRedo);
+  }, [contextMenu.cellPosition, spreadsheet.cells]);
 
   // 列の仮想化
   const columnVirtualizer = useVirtualizer({
@@ -83,7 +132,7 @@ export function Grid({
     }
   }, [selection.activeCell, virtualRows, virtualColumns, rowVirtualizer, columnVirtualizer]);
 
-  // セル選択のハンドラー
+  // セル選択のハンドラー（範囲選択対応）
   const handleCellClick = useCallback(
     (rowIndex: number, columnIndex: number, event: React.MouseEvent) => {
       event.stopPropagation();
@@ -94,9 +143,22 @@ export function Grid({
         onCellEditComplete(selection.activeCell, editingValue);
       }
 
-      onCellSelect(position);
+      // Shiftキーが押されている場合は範囲選択
+      if (event.shiftKey && selection.activeCell) {
+        const newSelection = {
+          type: 'cell' as const,
+          activeCell: selection.activeCell,
+          range: {
+            start: selection.activeCell,
+            end: position
+          }
+        };
+        onRangeSelect?.(newSelection);
+      } else {
+        onCellSelect(position);
+      }
     },
-    [isEditing, editingValue, selection.activeCell, onCellSelect, onCellEditComplete]
+    [isEditing, editingValue, selection.activeCell, onCellSelect, onRangeSelect, onCellEditComplete]
   );
 
   // セルダブルクリック
@@ -208,9 +270,18 @@ export function Grid({
             onRowHeaderClick={handleRowHeaderClick}
             onCellEditComplete={onCellEditComplete}
             onCellEditCancel={onCellEditCancel}
+            onContextMenu={handleContextMenu}
           />
         </div>
       </div>
+
+      {/* コンテキストメニュー */}
+      <ContextMenu
+        items={contextMenuItems}
+        position={contextMenu.position}
+        isOpen={contextMenu.isOpen}
+        onClose={handleCloseContextMenu}
+      />
     </div>
   );
 }

@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Grid } from './Grid/Grid';
 import { FormulaBar } from './FormulaBar/FormulaBar';
 import { Toolbar } from './Toolbar/Toolbar';
 import { StatusBar } from './StatusBar/StatusBar';
+import { CSVHandler } from './CSVHandler';
 import {
   Spreadsheet,
   createSpreadsheet,
@@ -80,6 +81,13 @@ export function SpreadsheetApp({
   // セル選択の処理
   const handleCellSelect = useCallback((position: CellPosition) => {
     setSelection(createSingleCellSelection(position));
+    setIsEditing(false);
+    setEditingValue('');
+  }, []);
+
+  // 範囲選択の処理
+  const handleRangeSelect = useCallback((newSelection: Selection) => {
+    setSelection(newSelection);
     setIsEditing(false);
     setEditingValue('');
   }, []);
@@ -174,6 +182,22 @@ export function SpreadsheetApp({
     }
   }, [isEditing, formulaBarValue, selection.activeCell, handleCellValueChange]);
 
+  // CSVハンドラーのref
+  const csvImportRef = useRef<HTMLButtonElement>(null);
+  const csvExportRef = useRef<HTMLButtonElement>(null);
+
+  // CSVインポートハンドラー
+  const handleCSVImport = useCallback((importedSpreadsheet: Spreadsheet) => {
+    setSpreadsheet(importedSpreadsheet);
+    setSelection(createSingleCellSelection({ row: 0, column: 0 }));
+  }, []);
+
+  // エラーハンドラー
+  const handleCSVError = useCallback((error: Error) => {
+    console.error('CSV operation error:', error);
+    alert(`CSV操作エラー: ${error.message}`);
+  }, []);
+
   // 統計情報の取得
   const cellCount = spreadsheet.cells.size;
   const selectedRange = `${String.fromCharCode(65 + selection.activeCell.column)}${
@@ -187,13 +211,26 @@ export function SpreadsheetApp({
       tabIndex={0}
       style={{ outline: 'none' }}
     >
+      {/* CSVハンドラー（非表示） */}
+      <CSVHandler
+        spreadsheet={spreadsheet}
+        onImport={handleCSVImport}
+        onError={handleCSVError}
+      />
+
       {/* ツールバー */}
       <Toolbar
         spreadsheet={spreadsheet}
         selection={selection}
         onAction={(action) => {
           console.log('Toolbar action:', action);
-          // ここで各種アクションを処理
+          // CSV関連のアクション処理
+          if (action.type === 'file:import:csv') {
+            document.getElementById('csv-import-trigger')?.click();
+          } else if (action.type === 'file:export:csv') {
+            document.getElementById('csv-export-trigger')?.click();
+          }
+          // その他のアクション処理
         }}
       />
 
@@ -213,6 +250,7 @@ export function SpreadsheetApp({
           isEditing={isEditing}
           editingValue={editingValue}
           onCellSelect={handleCellSelect}
+          onRangeSelect={handleRangeSelect}
           onCellEditStart={handleCellEditStart}
           onCellEditComplete={handleCellEditComplete}
           onCellEditCancel={handleCellEditCancel}

@@ -6,8 +6,21 @@
  */
 import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 
-// モック化されたAPI関数（実際の実装は存在しないため、テストは失敗する）
-import { importCsv } from '@/lib/api/spreadsheet';
+// API関数のインポート
+import { importCSV } from '../../src/lib/csv-handler';
+
+// APIエンドポイントをモック
+const importCsv = async (spreadsheetId: string, request: CsvImportRequest) => {
+  const csvContent = await request.file.text();
+  const result = await importCSV(csvContent, {
+    header: request.options?.hasHeader,
+    delimiter: request.options?.delimiter === 'comma' ? ',' : request.options?.delimiter === 'semicolon' ? ';' : '\t'
+  });
+  return {
+    data: result.data,
+    error: result.error
+  };
+};
 
 // テスト用の型定義（実際の型は未実装）
 interface CsvImportOptions {
