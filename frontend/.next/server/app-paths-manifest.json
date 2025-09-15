@@ -1,3 +1,4 @@
 {
+  "/spreadsheet/page": "app/spreadsheet/page.js",
   "/page": "app/page.js"
 }
